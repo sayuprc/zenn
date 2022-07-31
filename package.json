@@ -11,6 +11,12 @@
   "scripts": {
     "new:a": "npx zenn new:article",
     "new:b": "npx zenn new:book",
-    "preview": "npx zenn preview"
+    "preview": "npx zenn preview",
+    "textlint": "npx textlint \"./articles/*.md\""
+  },
+  "devDependencies": {
+    "textlint": "^12.2.1",
+    "textlint-rule-preset-ja-spacing": "^2.2.0",
+    "textlint-rule-preset-ja-technical-writing": "^7.0.0"
   }
 }
