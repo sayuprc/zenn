@@ -29,5 +29,13 @@
       "allowPeriodMarks": [":"],
     },
     "ja-technical-writing/sentence-length": false //100文字数制限の無効化
+  },
+  "filters": {
+    "allowlist": {
+      "allow": [
+        ":::",
+        "/:::details\\s.*/"
+      ]
+    }
   }
 }
