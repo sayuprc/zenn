@@ -6,7 +6,7 @@
   "author": "sayuprc <mkpoto15@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "zenn-cli": "^0.1.114"
+    "zenn-cli": "^0.1.131"
   },
   "scripts": {
     "new:a": "npx zenn new:article",
