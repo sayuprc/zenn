@@ -6,7 +6,7 @@
   "author": "sayuprc <mkpoto15@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "zenn-cli": "^0.1.131"
+    "zenn-cli": "^0.1.132"
   },
   "scripts": {
     "new:a": "npx zenn new:article",
@@ -15,7 +15,7 @@
     "textlint": "npx textlint \"./articles/*.md\""
   },
   "devDependencies": {
-    "textlint": "^12.2.1",
+    "textlint": "^12.2.3",
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-rule-preset-ja-spacing": "^2.2.0",
     "textlint-rule-preset-ja-technical-writing": "^7.0.0"
