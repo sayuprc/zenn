@@ -15,9 +15,9 @@
     "@azu/format-text" "^1.0.1"
 
 "@babel/parser@^7.7.5":
-  version "7.20.3"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.3.tgz#5358cf62e380cf69efcb87a7bb922ff88bfac6e2"
-  integrity sha512-OP/s5a94frIPXwjzEcv5S/tpQfc6XhxYUnmWpgdqMWGgYCuErA3SzozaRAMQgSZWKeTJxht9aWAkUY+0UzvOFg==
+  version "7.20.5"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.5.tgz#7f3c7335fe417665d929f34ae5dceae4c04015e8"
+  integrity sha512-r27t/cy/m9uKLXQNWWebeCUHgnAZq0CpG1OwKRxzJMP1vpSU4bSIK2hq+/cp0bQxetkXx38n09rNu8jVkcK/zA==
 
 "@textlint-rule/textlint-rule-no-invalid-control-character@^2.0.0":
   version "2.0.0"
@@ -2563,10 +2563,10 @@ xtend@^4.0.0, xtend@^4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-zenn-cli@^0.1.132:
-  version "0.1.132"
-  resolved "https://registry.yarnpkg.com/zenn-cli/-/zenn-cli-0.1.132.tgz#ec5af3817035d4015a72aa9340d5523185204300"
-  integrity sha512-5u4EZwIdtiVZCK8H4PdxcN86NeXz/toIvYX2q2Os1gowkDMi+Bxi/gq+SZKJ53EnTCe2njR0yLFYMXOS5S6a2Q==
+zenn-cli@^0.1.133:
+  version "0.1.133"
+  resolved "https://registry.yarnpkg.com/zenn-cli/-/zenn-cli-0.1.133.tgz#faa50c2a9b35d4f97356a2fbc12cbeb608d24928"
+  integrity sha512-J9ufo60rsSEx6PR4MUve0IwMdfPGmc7upDLy1HmwIOkFqzbA2qF4AjubNvP6toloZbt7IGTOwUZR2Y5tsT+jsw==
 
 zlibjs@^0.3.1:
   version "0.3.1"
