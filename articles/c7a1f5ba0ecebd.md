@@ -18,25 +18,26 @@ DatetimeInterface オブジェクトの演算子はオーバーライドされ�
 [こちら](https://zenn.dev/sayu/articles/6fd3a39f6e5d96)の記事で作成した環境を利用します。  
 実行する PHP スクリプトは以下です。
 
-```php
+```php:src/script.php
 <?php
 
-new DateTime() <= new DateTime(); // true になる
+new DateTime() <= new DateTime();
 ```
 
 ## ソースコードを読んでいく
 
 ### あたりをつける
 
-GDB を利用して処理を追っていくのですが、いちから処理を追っていくといくら時間があっても足りないので、あたりを付けます。  
-今回、 `<=` を利用しているので、`<=` の挙動を定義しているところを見つけます。  
-ソースコード上を検索して探すことも可能ではあるのですが、検索に引っかかる数が多すぎるので、PHP マニュアルの[パーサトークンの一覧](https://www.php.net/manual/ja/tokens.php)[^1]から探します。  
-[^1]: 一部の記号は一覧にはない場合があります。
+GDB を利用して処理を追っていくのですが、いちから処理を追っていくといくら時間があっても足りないので、あたりを付けます。
 
-`<=` は `T_IS_SMALLER_OR_EQUAL` という名前で定義されています。  
-これをソースコードから探します。
+今回は `<=` から比較処理を探してみます。  
+ソースコード上を検索して探すことも可能ですが、検索に引っかかる数が多すぎるので、PHP マニュアルの[パーサトークンの一覧](https://www.php.net/manual/ja/tokens.php)から探します。  
 
-`T_IS_SMALLER_OR_EQUAL` は Zend/zend_language_parser.y に定義されているのが確認できます。
+`<=` は `T_IS_SMALLER_OR_EQUAL` という名前で定義されてるようなので、これをソースコードから探します。
+
+#### T_IS_SMALLER_OR_EQUAL
+
+`T_IS_SMALLER_OR_EQUAL` は Zend/zend_language_parser.y に定義されています。
 
 ```:Zend/zend_language_parser.y
 %token T_IS_SMALLER_OR_EQUAL "'<='"
@@ -50,7 +51,9 @@ GDB を利用して処理を追っていくのですが、いちから処理を�
         { $$ = zend_ast_create_binary_op(ZEND_IS_SMALLER_OR_EQUAL, $1, $3); }
 ```
 
-Zend/zend_opcode.c に定義してある get_binary_op 関数で `ZEND_IS_SMALLER_OR_EQUAL` が使われています。  
+#### ZEND_IS_SMALLER_OR_EQUAL
+
+`ZEND_IS_SMALLER_OR_EQUAL` は Zend/zend_opcode.c に定義してある `get_binary_op` 関数で使われています。  
 次はこの関数で返却している `is_smaller_or_equal_function` を検索します。
 
 ```c:Zend/zend_opcode.c
@@ -65,7 +68,10 @@ ZEND_API binary_op_type get_binary_op(int opcode)
 }
 ```
 
-Zend/zend_operators.c に `is_smaller_or_equal_function` 関数を見つけました。  
+#### is_smaller_or_equal_function 関数
+
+`is_smaller_or_equal_function` 関数は Zend/zend_operators.c にあります。
+次は `zend_compare` 関数を探します。
 
 ```c:Zend/zend_operators.c
 ZEND_API zend_result ZEND_FASTCALL is_smaller_or_equal_function(zval *result, zval *op1, zval *op2) /* {{{ */
@@ -76,7 +82,10 @@ ZEND_API zend_result ZEND_FASTCALL is_smaller_or_equal_function(zval *result, zv
 /* }}} */
 ```
 
-ここで呼ばれている `zend_compare` 関数を見てみます。  
+#### zend_compare 関数
+
+`zend_compare` 関数は `is_smaller_or_equal_function` 関数と同じく、Zend/zend_operators.c にあります。
+
 この関数に渡された 2 つの引数の型に応じて比較をしているようです。    
 今回はどちらもオブジェクトなので、 `Z_TYPE_P()` の結果が `IS_OBJECT` になると予想されます。
 
@@ -118,16 +127,50 @@ ZEND_API int ZEND_FASTCALL zend_compare(zval *op1, zval *op2) /* {{{ */
 
 ### GDB でデバッグ
 
-`return Z_OBJ_HANDLER_P(op1, compare)(op1, op2);` にブレークポイントを設定し、スクリプトを実行します。
+`return Z_OBJ_HANDLER_P(op1, compare)(op1, op2);` にブレークポイントを設定し、PHP スクリプトを実行します。
 
 ![](/images/reading-php-src-datetimeinterface/break.png)
 
 ![](/images/reading-php-src-datetimeinterface/debug.png)
 
-ブレークポイントを設定したところで処理が止まったので、ステップイン実行で、比較処理の中身を見ていきます。
+ブレークポイントを設定したところで処理が止まったので、ステップイン実行で比較処理の中身を見ていきます。
 
-ステップイン実行すると、`date_object_compare_date` 関数に飛びます。  
-ここで引数を php_date_obj に変換し、`timelib_time_compare` 関数で比較しています。
+ステップイン実行すると、`date_object_compare_date` 関数に飛びます。
+
+:::details なぜ date_object_compare_date 関数が実行されるのか
+
+`Z_OBJ_HANDLER_P()` は第一引数の構造体が持つ第二引数のメンバを返します。  
+今回の場合、op1 の compare には `date_object_compare_date` 関数がセットされています。  
+そのため、ステップ実行すると `date_object_compare_date` 関数に飛びます。
+
+`date_object_compare_date` は DateTimeInterface オブジェクトがインスタンス化するときにセットされます。
+
+```c:ext/date/php_date.c
+static void date_register_classes(void) /* {{{ */
+{
+    date_ce_interface = register_class_DateTimeInterface();
+    date_ce_interface->interface_gets_implemented = implement_date_interface_handler;
+
+    date_ce_date = register_class_DateTime(date_ce_interface);
+    date_ce_date->create_object = date_object_new_date;
+    date_ce_date->default_object_handlers = &date_object_handlers_date;
+    memcpy(&date_object_handlers_date, &std_object_handlers, sizeof(zend_object_handlers));
+    date_object_handlers_date.offset = XtOffsetOf(php_date_obj, std);
+    date_object_handlers_date.free_obj = date_object_free_storage_date;
+    date_object_handlers_date.clone_obj = date_object_clone_date;
+    date_object_handlers_date.compare = date_object_compare_date; // ここでセットしている
+    date_object_handlers_date.get_properties_for = date_object_get_properties_for;
+    date_object_handlers_date.get_gc = date_object_get_gc;
+
+    // 省略
+} /* }}} */
+```
+:::
+
+#### date_object_compare_date 関数
+
+ここでは引数を php_date_obj に変換しています。  
+実際の比較は `timelib_time_compare` 関数が担っています。
 
 ```c:ext/date/php_date.c
 static int date_object_compare_date(zval *d1, zval *d2) /* {{{ */
@@ -155,8 +198,10 @@ static int date_object_compare_date(zval *d1, zval *d2) /* {{{ */
 } /* }}} */
 ```
 
+#### timelib_time_compare 関数
+
 `timelib_time_compare` 関数は ext/date/lib/timelib.c に定義してあります。  
-ここでオブジェクトの持つ UNIX タイムスタンプとマイクロ秒を使い比較をしています。
+ここで構造体のメンバである UNIX タイムスタンプとマイクロ秒を使い比較をしています。
 
 ```c:ext/date/lib/timelib.c
 int timelib_time_compare(timelib_time *t1, timelib_time *t2)
