@@ -3,8 +3,11 @@ title: "[php-src を読む] DateTimeInterface オブジェクト比較編"
 emoji: "⌛"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["php"]
-published: false
+published: true
+published_at: 2023-12-14 00:00
 ---
+
+この記事は [PHP Advent Calendar 2023](https://qiita.com/advent-calendar/2023/php) 14 日目の記事です。
 
 ## 初めに結論
 
