@@ -6,7 +6,7 @@
   "author": "sayuprc <mkpoto15@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "zenn-cli": "^0.1.134"
+    "zenn-cli": "^0.1.150"
   },
   "scripts": {
     "new:a": "npx zenn new:article",
@@ -15,9 +15,9 @@
     "textlint": "npx textlint \"./articles/*.md\""
   },
   "devDependencies": {
-    "textlint": "^12.2.4",
+    "textlint": "^13.4.1",
     "textlint-filter-rule-allowlist": "^4.0.0",
-    "textlint-rule-preset-ja-spacing": "^2.2.0",
-    "textlint-rule-preset-ja-technical-writing": "^7.0.0"
+    "textlint-rule-preset-ja-spacing": "^2.3.0",
+    "textlint-rule-preset-ja-technical-writing": "^9.0.0"
   }
 }
