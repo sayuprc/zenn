@@ -1,0 +1,11 @@
+services:
+  node:
+    image: zenn:20
+    environment:
+      LANG: ja_JP.UTF-8
+      TZ: Asia/Tokyo
+    tty: true
+    volumes:
+      - .:/app
+    ports:
+      - 9000:8000

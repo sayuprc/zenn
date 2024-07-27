@@ -1,0 +1,13 @@
+/.github
+/articles
+/books
+/images
+/node_modules
+.editorconfig
+.gitignore
+.textlintrc
+compose.yaml
+Makefile
+package.json
+README.md
+yarn.lock
