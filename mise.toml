@@ -1,0 +1,15 @@
+[tools]
+node = "20"
+"npm:yarn" = "latest"
+
+[tasks.install]
+description = "Install packages"
+run = "yarn"
+
+[tasks.preview]
+description = "Preview article"
+run = "yarn preview"
+
+[tasks."article:new"]
+description = "Create new article"
+run = "yarn new:a"
